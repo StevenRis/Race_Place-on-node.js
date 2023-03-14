@@ -1,0 +1,355 @@
+<%- include('header'); -%>
+
+    <div class="modal">
+        <div class="modalRegistration shadow-lg">
+            <div class="text-center">
+                <div class="mb-4">
+                    <h1>Sign in</h1>
+                </div>
+                <div class="close-modal">
+                    <img class="close-button" src="/icons/close.png" alt="close" width="20">
+                </div>
+                <form action="/sign-in" method="post">
+                    <div class="mb-3">
+                        <label for="username">Username:</label>
+                        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" type="text" required>
+                    </div>
+                    <div class="mb-3">
+                        <label  for="password">Password:</label>
+                        <input class="form-control mx-auto w-auto" id="password" name="password" type="password" required>
+                        <a href="/password_reset">Forgot password?</a>
+                    </div>
+                    <div class="">
+                        <button class="btn btn-danger" type="submit">Sign In</button>
+                        <span class="px-3">or</span>
+                        <a href="/register" class="btn btn-danger">Register</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="setups_car-title text-center pt-5">
+        <h1><%= car.brand %> <%= car.model %></h1>
+        <h3>Location: <%= locations.location_name %> </h3>
+    </div>
+
+    <% for (let i in setups ) { %>
+
+    <div class="container text-center my-5 pt-2 shadow-lg rounded-5 setup-bg">
+        <div class="d-flex flex-container justify-content-center">
+            <!-- Tyres -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                    <tr>
+                        <th class="table-dark text-start">Tyres</th>
+                        <td class="text-start table-success"><%= setups[i].tyres %></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Conditions -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                    <tr class="">
+                        <th class="table-dark text-start">Track Conditions</th>
+                        <td class="text-start table-success"><%= setups[i].conditions %></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Surface -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                    <tr class="">
+                        <th class="table-dark text-start">Track Surface</th>
+                        <td class="text-start table-success"><%= setups[i].surface %></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- add to favorite -->
+            <% if (user) {%>
+            <div class="mt-3">
+                <form action="/cars/{{ car['model %>/{{ location['location_name %>" method="post">
+                    <input name="setup_id" value="<%= setups[i].id %>" type="text" hidden>
+                    <button class="btn btn-danger btn-block car-setup mb-3" type="submit"><img src="/icons/favorite.png" alt="add-setup-to-favorite" style="width: 25px"></button>
+                </form>
+            </div>
+            <% } else { %>
+            <div class="mt-3">
+                <button class="favoriteButton btn btn-danger btn-block car-setup mb-3" type="submit"><img src="/icons/favorite.png" alt="add-setup-to-favorite" style="width: 25px"></button>
+            </div>
+            <% } %>
+        </div>
+
+        <div class="d-flex flex-wrap">
+            <!-- Alignment -->
+            <div class="container-fluid mt-3">
+                <table class="table table-sm table-boardered table-striped shadow p-4 mb-4 bg-white ">
+                    <tr class="table-dark">
+                        <th class="text-center" colspan="100%">Alignment</th>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Toe Angle Front</th>
+                        <td class="text-start"><%= setups[i].toeAngleFront%>&deg;</td>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Camber Angle Front</th>
+                        <td class="text-start"><%= setups[i].camberAngleFront%>&deg;</td>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Toe Angle Rear</th>
+                        <td class="text-start"><%= setups[i].toeAngleRear %>&deg;</td>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Camber Angle Rear</th>
+                        <td class="text-start"><%= setups[i].camberAngleRear %>&deg;</td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Brakes -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                    <tr class="table-dark">
+                        <th class="text-center" colspan="100%">Brakes</th>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Braking Force</th>
+                        <td class="text-start"><%= setups[i].brakingForce %> N-m</td>
+                    </tr>
+                    <tr>
+                        <th class="text-start">Brake Bias</th>
+                        <td class="text-start"><%= setups[i].brakeBias %>%</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <!-- Differential -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                        <tr class="table-dark">
+                            <th class="text-center" colspan="100%">Differential</th>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front LSD Driving Lock</th>
+                            <td class="text-start"><%= setups[i].frontLSDDrivingLock %>%</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front LSD Braking Lock</th>
+                            <td class="text-start"><%= setups[i].frontLSDBrakingLock %>%</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front LSD Preload</th>
+                            <td class="text-start"><%= setups[i].frontLSDPreload %> N-m</td>
+                        </tr>
+                        <tr class="table-light">
+                            <th class="text-start">Centre LSD Driving Lock</th>
+                            <td class="text-start"><%= setups[i].centreLSDDrivingLock %>%</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Centre LSD Braking Lock</th>
+                            <td class="text-start"><%= setups[i].centreLSDBrakingLock %>%</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Centre LSD Preload</th>
+                            <td class="text-start"><%= setups[i].centreLSDPreload %> N-m</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear LSD Driving Lock</th>
+                            <td class="text-start"><%= setups[i].rearLsdDrivLock %>%</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear LSD Braking Lock</th>
+                            <td class="text-start"><%= setups[i].rearLsdBrakeLock %>%</td>
+                        </tr>
+
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear LSD Preload</th>
+                            <td class="text-start"><%= setups[i].rearLSDPreload %> N-m</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front Viscous Differential</th>
+                            <td class="text-start"><%= setups[i].frontVisDif %> kgf-m/100rpm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Center Viscous Differential</th>
+                            <td class="text-start"><%= setups[i].centerVisDif %> kgf-m/100rpm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear Viscous Differential</th>
+                            <td class="text-start"><%= setups[i].rearVisDif %> kgf-m/100rpm</td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <!-- Gearing -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                        <tr class="table-dark">
+                            <th class="text-center" colspan="100%">Gearing</th>
+                        </tr>
+                        <tr class="table-light">
+                            <th class="text-start">1st Gear</th>
+                            <td class="text-start"><%= setups[i].gear1 %></td>
+
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">2nd Gear</th>
+                            <td class="text-start"><%= setups[i].gear2 %></td>
+
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">3rd Gear</th>
+                            <td class="text-start"><%= setups[i].gear3 %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">4ht Gear</th>
+                            <td class="text-start"><%= setups[i].gear4 %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">5ht Gear</th>
+                            <td class="text-start"><%= setups[i].gear5 %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">6ht Gear</th>
+                            <td class="text-start"><%= setups[i].gear6 %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Final Drive</th>
+                            <td class="text-start"><%= setups[i].finalDrive %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Note</th>
+                            <td class="text-start">Final drive <%= setups[i].note %></td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Optimal Shift</th>
+                            <td class="text-start"><%= setups[i].optimalShift %></td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <!-- Damping -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                    <tr class="table-dark">
+                        <th class="text-center" colspan="100%">Damping</th>
+                    </tr>
+                    <tr class="table-light">
+                        <th class="text-start">Front Slow Bump</th>
+                        <td class="text-start"><%= setups[i].slowBumpFront %></td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Front Fast Bump</th>
+                        <td class="text-start"><%= setups[i].fastBumpFront %></td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Front Bump Zone Division</th>
+                        <td class="text-start"><%= setups[i].bumpZoneDivFront %> mps</td>
+
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Front Slow Rebound</th>
+                        <td class="text-start"><%= setups[i].slowReboundFront %></td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Rear Slow Bump</th>
+                        <td class="text-start"><%= setups[i].slowBumpRear %></td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Rear Fast Bump</th>
+                        <td class="text-start"><%= setups[i].fastBumpRear %></td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Rear Bump Zone Division</th>
+                        <td class="text-start"><%= setups[i].bumpZoneDivRear %> mps</td>
+
+                    </tr>
+
+                    <tr class="table-light">
+                        <th class="text-start">Rear Slow Rebound</th>
+                        <td class="text-start"><%= setups[i].slowReboundRear %></td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <!-- Springs -->
+            <div class="container-fluid mt-3">
+                <table class="table table-striped shadow p-4 mb-4 bg-white">
+                        <tr class="table-dark">
+                            <th class="text-center" colspan="100%">Springs</th>
+                        </tr>
+                        <tr class="table-light">
+                            <th class="text-start">Front Ride Height</th>
+                            <td class="text-start"><%= setups[i].rideHeightFront %> mm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front Spring Rate</th>
+                            <td class="text-start"><%= setups[i].springRateFront %> N/mm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Front Anti-Roll Bar</th>
+                            <td class="text-start"><%= setups[i].rollBarFront %> N/mm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear Ride Height</th>
+                            <td class="text-start"><%= setups[i].rideHeightRear %> mm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear Spring Rate</th>
+                            <td class="text-start"><%= setups[i].springRateRear %> N/mm</td>
+                        </tr>
+
+                        <tr class="table-light">
+                            <th class="text-start">Rear Anti-Roll Bar</th>
+                            <td class="text-start"><%= setups[i].rollBarRear %> N/mm</td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <% } %>
+
+<%- include('footer'); -%>

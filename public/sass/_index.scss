@@ -1,0 +1,59 @@
+.hero {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    background-image: url(/static/images/background/main-mobile.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+        .hero-title {
+            display: block;
+            padding: 26px;
+
+            div {
+            text-align: center;
+            }
+
+            h1 {
+                display: inline-block;
+                margin-right: 5px;
+                text-shadow: -1px 0 $black, 0 1px $black, 1px 0 $black, 0 -1px $black;
+            }
+
+            :nth-child(3) {
+                color: $red;
+            }
+
+            p {
+                padding: 10px 0;
+            }
+    }
+}
+
+@media (min-width: 770px) {
+    .hero {
+        background-image: url(/static/images/background/main-bg.jpg);
+    }
+}
+
+@media (min-width: 450px) {
+    .hero {
+        .hero-title {
+            position: absolute;
+            top: 10%;
+            left: 70%;
+            width: 36%;
+            transform: translate(-50%);
+            margin-top: 50px;
+
+            div {
+                text-align: left;
+            }
+
+            h1 {
+                display: block;
+            }
+        }
+    }
+}

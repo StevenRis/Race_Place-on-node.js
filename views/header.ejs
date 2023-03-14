@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <!-- favicon -->
+    <link href="/icons/favicon/favicon.ico" rel="icon">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>Race Place: <%= pageTitle %></title>
+  </head>
+  <body>
+    <div class="wrapper-container">
+      <header class="header">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+          <div class="container-fluid">
+            <a class="nav-link active" href="/">
+              <img src="/images/logo/raceplace_logo.png" alt="Logo race place" style="width: 100px" class="rounded-pill">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar" >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+              <!-- Check user is logged in -->
+              <% if (user) { %>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/cars">Vehicles</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/locations">Locations</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about">About</a>
+                </li>
+              </ul>
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="/account">My Account</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/logout">Sign out</a>
+                </li>
+              </ul>
+              <% } else { %>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/cars">Vehicles</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/locations">Locations</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about">About</a>
+                </li>
+              </ul>
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="/register">Register</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/login">Sign In</a>
+                </li>
+              </ul>
+              <% } %>
+            </div>
+          </div>
+        </nav>
+        <div>
+  
+  <!-- FLASH MESSAGE  -->
+  
+    <% if (messages.error) { %>
+      <div style="background-color: red; text-align: center;"><%= messages.error %></div>
+    <% } %>
+    <% if (messages.success) { %>
+      <div style="background-color: green; text-align: center;"><%= messages.success %></div>
+    <% } %>
+
+    <!---->
+        </div>
+      </header>
+      <main class="main">
+        <div class="spinner container-fluid text-center">
+          <div class="spinner-border"></div>
+        </div>
+        <div class="content">

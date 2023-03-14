@@ -1,0 +1,51 @@
+@import 'colors';
+@import 'index';
+@import 'spinner';
+@import 'car-setups';
+@import 'car-setup';
+@import 'goTopButton';
+@import 'account';
+@import 'apology';
+@import 'validation';
+@import 'modalRegistration';
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    z-index: 99;
+}
+
+.wrapper-container {
+    height: 100vh;
+}
+
+.wrapper-container, .main {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    display: none;
+    flex-direction: column;
+}
+
+.main, .content {
+    flex: 1 1 auto;
+}
+
+.footer {
+    background-color: $black;
+
+    span {
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
+

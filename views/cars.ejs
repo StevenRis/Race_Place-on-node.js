@@ -1,0 +1,20 @@
+<%- include('header'); -%>
+
+    <div class="container-fluid mt-3 py-3 text-center">
+        <h2 class="mb-2">Vehicles</h2>
+        <div class="container-xl d-flex flex-wrap justify-content-center">
+            <% for (let i in cars) { %>
+            <div class="card m-3 bg-dark text-white shadow" style="width:400px">
+                <img class="card-img-top" src="images/cars/2000cc/<%= cars[i].car_image %>" alt="Car image" style="width:100%">
+                <div class="card-body">
+                    <h4 class="card-title mb-3"><%= cars[i].brand %> <%= cars[i].model %></h4>
+                    <div class="d-grid">
+                    <a href="/cars/<%= cars[i].model %>" class="btn btn-danger btn-block car-setup">Select</a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+<%- include('footer'); -%>

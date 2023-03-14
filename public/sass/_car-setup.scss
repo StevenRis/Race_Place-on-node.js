@@ -1,0 +1,23 @@
+.setup-bg {
+    background-color: $darky-white;
+}
+
+.table-light > th {
+    width: 35%;
+}
+
+@media (min-width: 375px) {
+    .table {
+        width: 100%;
+    }
+
+    .table-light > th {
+        width: 50%;
+    }
+}
+
+@media (max-width: 450px) {
+    .flex-container {
+        flex-wrap: wrap;
+    }
+}

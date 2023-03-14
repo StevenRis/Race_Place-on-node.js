@@ -1,0 +1,353 @@
+.hero {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  background-image: url(/static/images/background/main-mobile.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.hero .hero-title {
+  display: block;
+  padding: 26px;
+}
+.hero .hero-title div {
+  text-align: center;
+}
+.hero .hero-title h1 {
+  display: inline-block;
+  margin-right: 5px;
+  text-shadow: -1px 0 #000000, 0 1px #000000, 1px 0 #000000, 0 -1px #000000;
+}
+.hero .hero-title :nth-child(3) {
+  color: #dc3545;
+}
+.hero .hero-title p {
+  padding: 10px 0;
+}
+
+@media (min-width: 770px) {
+  .hero {
+    background-image: url(/static/images/background/main-bg.jpg);
+  }
+}
+@media (min-width: 450px) {
+  .hero .hero-title {
+    position: absolute;
+    top: 10%;
+    left: 70%;
+    width: 36%;
+    transform: translate(-50%);
+    margin-top: 50px;
+  }
+  .hero .hero-title div {
+    text-align: left;
+  }
+  .hero .hero-title h1 {
+    display: block;
+  }
+}
+.spinner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: wait;
+}
+
+.setups_car-title > h1, h2 {
+  display: inline-block;
+}
+
+.setup-bg {
+  background-color: #ededed;
+}
+
+.table-light > th {
+  width: 35%;
+}
+
+@media (min-width: 375px) {
+  .table {
+    width: 100%;
+  }
+  .table-light > th {
+    width: 50%;
+  }
+}
+@media (max-width: 450px) {
+  .flex-container {
+    flex-wrap: wrap;
+  }
+}
+.goTopButton {
+  position: fixed;
+  bottom: 60px;
+  right: 6px;
+  display: none;
+  padding: 15px;
+  background-color: #dc3545;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 99;
+}
+.goTopButton .bar1, .goTopButton .bar2 {
+  width: 20px;
+  height: 2px;
+  margin: 3px 0 0 -4px;
+  background-color: #000000;
+  transition: 0.7s;
+}
+.goTopButton .bar1 {
+  transform: rotate(128deg) translate(3px, 3px);
+}
+.goTopButton .bar2 {
+  transform: rotate(45deg) translate(2px, -9px);
+}
+.goTopButton:hover, .goTopButton:focus {
+  background-color: rgba(0, 0, 0, 0.223);
+}
+
+@media (min-width: 768px) {
+  .goTopButton {
+    right: 25px;
+  }
+}
+.wrapper {
+  width: 360px;
+  margin: 15px auto;
+  padding: 15px;
+}
+.wrapper:hover .img {
+  filter: blur(7px);
+  opacity: 0.4;
+}
+.wrapper:hover .info-vehicle {
+  bottom: 155px;
+}
+.wrapper:hover .h-bg {
+  left: 0px;
+}
+.wrapper:hover .setup-txt {
+  left: 20px;
+  color: #818181;
+  transform: translateY(-50%);
+}
+.wrapper:hover .show-setup_icons {
+  left: 50%;
+}
+.wrapper:hover .info-setup {
+  bottom: 50px;
+  opacity: 1;
+  transition-delay: 300ms;
+}
+
+.box-up {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  text-align: center;
+  overflow: hidden;
+}
+.box-up .img {
+  padding: 20px 0;
+  transition: all 800ms cubic-bezier(0, 0, 0.18, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+}
+
+.box-down {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+}
+.box-down .h-bg {
+  position: absolute;
+  left: -659px;
+  width: 660px;
+  height: 100%;
+  background-color: #dc3545;
+  transition: all 800ms cubic-bezier(0, 0, 0.18, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+}
+.box-down .h-bg .h-bg-inner {
+  width: 50%;
+  height: 100%;
+  background-color: #464646;
+}
+
+.info-vehicle {
+  position: absolute;
+  bottom: 25px;
+  width: 100%;
+  transition: all 400ms cubic-bezier(0, 0, 0.18, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+}
+.info-vehicle .location-title, .info-vehicle .vehicle-title {
+  display: block;
+}
+.info-vehicle .location-title {
+  font-size: 18px;
+  color: #818181;
+}
+.info-vehicle .vehicle-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #818181;
+}
+
+.info-setup {
+  position: absolute;
+  width: 100%;
+  bottom: -20px;
+  color: #818181;
+  opacity: 0;
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+  transition: all 300ms cubic-bezier(0, 0, 0.18, 1);
+}
+.info-setup .setup-info_condition, .info-setup .setup-info_condition_surface, .info-setup .setup-info_condition_tyres {
+  color: #818181;
+}
+
+.show-setup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.show-setup .setup-txt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: #dc3545;
+  transition: all 600ms cubic-bezier(0, 0, 0.18, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+  transition-delay: 100ms;
+}
+.show-setup .show-setup_icons {
+  position: absolute;
+  top: 50%;
+  left: 120%;
+  transform: translate(-50%, -50%);
+  display: block;
+  transition: all 600ms cubic-bezier(0, 0, 0.18, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.18, 1);
+  transition-delay: 100ms;
+}
+.show-setup .show-setup_icons .txt {
+  font-size: 12px;
+  color: #ffffff;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 991px) {
+  .wrapper {
+    width: 345px;
+  }
+}
+@media (max-width: 767px) {
+  .wrapper {
+    width: 290px;
+    margin: 30px auto;
+  }
+}
+.apology {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.form {
+  width: 200px;
+}
+
+.ValidationHelper {
+  display: block;
+  margin: 25px 0;
+  text-align: left;
+}
+
+.modal {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.modalRegistration {
+  position: relative;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: block;
+  width: 340px;
+  padding: 30px;
+  background-color: #ededed;
+}
+
+.active {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .modalRegistration {
+    width: 400px;
+    padding: 65px;
+  }
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  z-index: 99;
+}
+
+.wrapper-container {
+  height: 100vh;
+}
+
+.wrapper-container, .main {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: none;
+  flex-direction: column;
+}
+
+.main, .content {
+  flex: 1 1 auto;
+}
+
+.footer {
+  background-color: #000000;
+}
+.footer span {
+  font-weight: bold;
+}
+.footer a {
+  text-decoration: none;
+}/*# sourceMappingURL=style.css.map */

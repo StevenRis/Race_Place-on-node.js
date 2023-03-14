@@ -1,0 +1,29 @@
+<%- include('header'); -%>
+
+    <div class="container d-flex flex-column align-items-center mt-5 pt-5 text-center">
+        <div class="mb-4">
+            <h1>Create an account</h1>
+        </div>
+        <div class="form">
+            <form action="/register" method="post">
+                <div class="mb-3">
+                    <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
+                </div>
+                <div class="mb-3">
+                    <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
+                </div>
+                <div class="mb-3">
+                    <input class="form-control mx-auto w-auto" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" type="password" required>
+                </div>
+                <div class="ValidationHelper">
+                    <li class="ValidationElement">One uppercase character</li>
+                    <li class="ValidationElement">One number</li>
+                    <li class="ValidationElement">One special character</li>
+                    <li class="ValidationElement">6 characters minimum</li>
+                </div>
+                <button class="btn btn-danger" type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+<%- include('footer'); -%>
