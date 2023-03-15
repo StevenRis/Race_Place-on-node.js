@@ -2,7 +2,7 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  background-image: url(/static/images/background/main-mobile.jpg);
+  background-image: url(/images/background/main-mobile.jpg);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -28,7 +28,7 @@
 
 @media (min-width: 770px) {
   .hero {
-    background-image: url(/static/images/background/main-bg.jpg);
+    background-image: url(/images/background/main-bg.jpg);
   }
 }
 @media (min-width: 450px) {
@@ -292,6 +292,7 @@
   position: absolute;
   top: 20px;
   right: 20px;
+  cursor: pointer;
 }
 
 .modalRegistration {
@@ -315,6 +316,18 @@
     padding: 65px;
   }
 }
+.flash-message {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 250px;
+  height: 250px;
+  text-align: center;
+}
+
 html, body {
   margin: 0;
   padding: 0;

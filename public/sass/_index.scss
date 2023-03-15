@@ -2,7 +2,7 @@
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    background-image: url(/static/images/background/main-mobile.jpg);
+    background-image: url(/images/background/main-mobile.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -33,7 +33,7 @@
 
 @media (min-width: 770px) {
     .hero {
-        background-image: url(/static/images/background/main-bg.jpg);
+        background-image: url(/images/background/main-bg.jpg);
     }
 }
 

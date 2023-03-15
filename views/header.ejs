@@ -12,7 +12,7 @@
     <link href="/icons/favicon/favicon.ico" rel="icon">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/style.min.css">
+    <link rel="stylesheet" href="/sass/style.css">
 
     <title>Race Place: <%= pageTitle %></title>
   </head>
@@ -80,10 +80,10 @@
         <div>
   <!-- FLASH MESSAGE  -->
     <% if (messages.error) { %>
-      <div style="background-color: red; text-align: center;"><%= messages.error %></div>
+      <div class="flash-message" style="background-color: red; text-align: center;"><%= messages.error %></div>
     <% } %>
     <% if (messages.success) { %>
-      <div style="background-color: green; text-align: center;"><%= messages.success %></div>
+      <div class="flash-message" style="background-color: green; text-align: center;"><%= messages.success %></div>
     <% } %>
     <!---->
         </div>
