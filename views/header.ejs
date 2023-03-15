@@ -44,6 +44,9 @@
               </ul>
               <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                  <span class="nav-link">Hello, <%= user.username %></span>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="/account">My Account</a>
                 </li>
                 <li class="nav-item">
@@ -75,16 +78,13 @@
           </div>
         </nav>
         <div>
-  
   <!-- FLASH MESSAGE  -->
-  
     <% if (messages.error) { %>
       <div style="background-color: red; text-align: center;"><%= messages.error %></div>
     <% } %>
     <% if (messages.success) { %>
       <div style="background-color: green; text-align: center;"><%= messages.success %></div>
     <% } %>
-
     <!---->
         </div>
       </header>

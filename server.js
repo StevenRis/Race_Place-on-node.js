@@ -5,9 +5,6 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 
-// Connect session module
-const loginRequired = require(__dirname + '/session.js');
-
 const db = new sqlite3.Database('database.db');
 const app = express();
 const port = process.env.PORT || 8080;
@@ -152,7 +149,7 @@ app.get('/cars/:model/:location', async (req, res) => {
 
     const pageTitle = `${car.brand} ${car.model} ${carLocations.location_name}`;
 
-    res.render('car-setup', {
+    res.render('carSetup', {
       pageTitle: pageTitle,
       user: user,
       car: car,
@@ -496,7 +493,7 @@ app.get(
         });
       });
 
-      res.render('car-setup', {
+      res.render('carSetup', {
         pageTitle: 'setup',
         user: req.session.user,
         car: car,
