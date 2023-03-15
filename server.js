@@ -4,13 +4,13 @@ const flash = require('express-flash');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('database.db');
-
-const app = express();
-const port = 8080;
 
 // Connect session module
-const login_required = require(__dirname + '/session.js');
+const loginRequired = require(__dirname + '/session.js');
+
+const db = new sqlite3.Database('database.db');
+const app = express();
+const port = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
 
@@ -28,16 +28,19 @@ app.use(
   })
 );
 
+//
 // ROUTES
+//
 // HOME
 app.get('/', (req, res) => {
-  if (login_required) {
-    res.render('home', { pageTitle: 'Home', user: req.session.user });
-  }
+  const pageTitle = 'Home page';
+  const user = req.session.user;
+  res.render('home', { pageTitle: pageTitle, user: req.session.user });
 });
 
 // CARS
 app.get('/cars', async (req, res) => {
+  const pageTitle = 'Vehicles';
   try {
     const cars = await new Promise((resolve, reject) => {
       db.all('SELECT * FROM cars', (err, rows) => {
@@ -45,38 +48,36 @@ app.get('/cars', async (req, res) => {
         resolve(rows);
       });
     });
-    if (login_required) {
-      res.render('cars', {
-        pageTitle: 'Vehicles',
-        user: req.session.user,
-        cars: cars,
-      });
-    }
+    res.render('cars', {
+      pageTitle: pageTitle,
+      user: req.session.user,
+      cars: cars,
+    });
   } catch (err) {
     console.error(err);
-    // req.flash('error', 'An error occurred.');
     res.redirect('/');
   }
 });
 
 // SHOW LOCATIONS FOR PARTICULAR CAR
 app.get('/cars/:model', async (req, res) => {
-  const car_model = req.params.model;
+  const carModel = req.params.model;
+  let pageTitle = '';
 
   try {
     const car = await new Promise((resolve, reject) => {
-      db.all('SELECT * FROM cars WHERE model=?', [car_model], (err, row) => {
+      db.all('SELECT * FROM cars WHERE model=?', [carModel], (err, row) => {
         if (err) reject(err);
         resolve(row[0]);
       });
     });
 
-    const car_id = car.id;
+    const carId = car.id;
 
-    const car_locations = await new Promise((resolve, reject) => {
+    const carLocations = await new Promise((resolve, reject) => {
       db.all(
         'SELECT DISTINCT locations.id AS location_id, location_name, location_image FROM locations INNER JOIN setups ON locations.id=setups.locations_id INNER JOIN cars ON cars.id=setups.cars_id WHERE cars_id IN (SELECT id FROM cars WHERE id=?)',
-        [car_id],
+        [carId],
         (err, rows) => {
           if (err) reject(err);
           resolve(rows);
@@ -84,13 +85,13 @@ app.get('/cars/:model', async (req, res) => {
       );
     });
 
-    const pageTitle = `${car.brand} ${car.model}`;
+    pageTitle = `${car.brand} ${car.model}`;
 
-    res.render('car-locations', {
+    res.render('carLocations', {
       pageTitle: pageTitle,
       user: req.session.user,
       car: car,
-      car_locations: car_locations,
+      carLocations: carLocations,
     });
   } catch (err) {
     console.error(err);
@@ -101,14 +102,13 @@ app.get('/cars/:model', async (req, res) => {
 
 // SHOW SETUPS FOR PARTICULAR CAR
 app.get('/cars/:model/:location', async (req, res) => {
-  const car_model = req.params.model;
-  const car_location = req.params.location;
-
-  console.log(car_model);
+  const carModel = req.params.model;
+  const carLocation = req.params.location;
+  const user = req.session.user;
 
   try {
     const car = await new Promise((resolve, reject) => {
-      db.all('SELECT * FROM cars WHERE model=?', [car_model], (err, row) => {
+      db.all('SELECT * FROM cars WHERE model=?', [carModel], (err, row) => {
         if (err) reject(err);
         resolve(row[0]);
       });
@@ -117,7 +117,7 @@ app.get('/cars/:model/:location', async (req, res) => {
     const location = await new Promise((resolve, reject) => {
       db.all(
         'SELECT * FROM locations WHERE location_name=?',
-        [car_location],
+        [carLocation],
         (err, row) => {
           if (err) reject(err);
           resolve(row[0]);
@@ -125,13 +125,13 @@ app.get('/cars/:model/:location', async (req, res) => {
       );
     });
 
-    const car_id = car.id;
-    const location_id = location.id;
+    const carId = car.id;
+    const locationId = location.id;
 
-    const car_locations = await new Promise((resolve, reject) => {
+    const carLocations = await new Promise((resolve, reject) => {
       db.all(
         'SELECT location_name FROM locations INNER JOIN setups ON locations.id=setups.locations_id WHERE setups.locations_id IN (SELECT id FROM locations WHERE id=?)',
-        [location_id],
+        [locationId],
         (err, rows) => {
           if (err) reject(err);
           resolve(rows[0]);
@@ -139,10 +139,10 @@ app.get('/cars/:model/:location', async (req, res) => {
       );
     });
 
-    const car_setups = await new Promise((resolve, reject) => {
+    const carSetups = await new Promise((resolve, reject) => {
       db.all(
         'SELECT * FROM setups WHERE cars_id=? and locations_id=?',
-        [car_id, location_id],
+        [carId, locationId],
         (err, rows) => {
           if (err) reject(err);
           resolve(rows);
@@ -150,15 +150,57 @@ app.get('/cars/:model/:location', async (req, res) => {
       );
     });
 
-    const pageTitle = `${car.brand} ${car.model} ${car_locations.location_name}`;
+    const pageTitle = `${car.brand} ${car.model} ${carLocations.location_name}`;
 
     res.render('car-setup', {
       pageTitle: pageTitle,
-      user: req.session.user,
+      user: user,
       car: car,
-      setups: car_setups,
-      locations: car_locations,
+      setups: carSetups,
+      locations: carLocations,
     });
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'An error occurred.');
+    res.redirect('/cars');
+  }
+});
+
+// ADD SETUP TO FAVORITE
+app.post('/add-to-favorites', async (req, res) => {
+  const setupId = req.body.setupId;
+
+  try {
+    const userId = req.session.user.id;
+    const setupExists = await new Promise((resolve, reject) => {
+      db.get(
+        'SELECT EXISTS (SELECT 1 FROM favorite_setups WHERE user_id=? and setup_id=?)',
+        [userId, setupId],
+        (err, row) => {
+          if (err) reject(err);
+          resolve(Object.values(row)[0]); // Extract the first value of the first row
+        }
+      );
+    });
+
+    if (setupExists === 0) {
+      db.run(
+        'INSERT INTO favorite_setups (user_id, setup_id) VALUES (?, ?)',
+        [userId, setupId],
+        (err) => {
+          if (err) {
+            req.flash('error', 'Error occured.');
+            res.redirect('/cars');
+          } else {
+            req.flash('success', 'Setup was added to favorites.');
+            res.redirect('back');
+          }
+        }
+      );
+    } else {
+      req.flash('error', 'You already have this setup.');
+      res.redirect('back');
+    }
   } catch (err) {
     console.error(err);
     req.flash('error', 'An error occurred.');
@@ -169,34 +211,35 @@ app.get('/cars/:model/:location', async (req, res) => {
 // SHOW LOCATIONS
 app.get('/locations', (req, res) => {
   const pageTitle = 'Locations';
+  const user = req.session.user;
 
-  db.all('SELECT * FROM locations', (err, rows) => {
-    if (err) return console.log(err);
-    if (login_required) {
-      res.render('locations', {
-        pageTitle: pageTitle,
-        locations: rows,
-        user: req.session.user,
-      });
-    } else {
-      res.redirect('/');
-    }
+  db.all('SELECT * FROM locations', (err, locations) => {
+    if (err) return console.err(err);
+    res.render('locations', {
+      pageTitle: pageTitle,
+      locations: locations,
+      user: user,
+    });
   });
 });
 
 // REGISTER
 app.get('/register', (req, res) => {
+  const pageTitle = 'Register';
+  const user = req.session.user;
   res.render('register', {
-    pageTitle: 'Register',
-    message: req.flash('message'),
-    user: req.session.user,
+    pageTitle: pageTitle,
+    user: user,
   });
 });
 
 app.post('/register', async (req, res) => {
   const { username, password, confirmPassword } = req.body;
 
-  // Check if username or email already exists in database
+  // Hash password using bcrypt
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Check if username already exists in database
   try {
     const existingUser = await new Promise((resolve, reject) => {
       db.get('SELECT * FROM users WHERE username=?', [username], (err, row) => {
@@ -211,17 +254,14 @@ app.post('/register', async (req, res) => {
       res.redirect('register');
       return;
     }
-
+    // Check the password and confirmation password are the same
+    // if not - display error message
     if (password != confirmPassword) {
       req.flash('error', 'Passwords are not the same');
       res.redirect('register');
       return;
     }
-
-    // Hash password using bcrypt
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert new user into database
+    // Add new user to the database
     db.run(
       'INSERT INTO users (username, hash) VALUES (?, ?)',
       [username, hashedPassword],
@@ -230,8 +270,8 @@ app.post('/register', async (req, res) => {
           req.flash('error', 'Error creating user');
           res.redirect('register');
         } else {
-          req.flash('success', 'Registration successful');
-          res.redirect('/');
+          req.flash('success', 'Registration successful.');
+          res.redirect('/login');
         }
       }
     );
@@ -245,10 +285,11 @@ app.post('/register', async (req, res) => {
 // SIGN IN
 app.get('/login', (req, res) => {
   const pageTitle = 'Sign in';
+  const user = req.session.user;
 
   res.render('login', {
     pageTitle: pageTitle,
-    user: req.session.user,
+    user: user,
   });
 });
 
@@ -268,17 +309,17 @@ app.post('/login', async (req, res) => {
     });
 
     if (!user) {
-      req.flash('error', 'Invalid username or password');
+      req.flash('error', 'Invalid username.');
       return res.redirect('login');
     }
 
-    const result = await bcrypt.compare(password, user.hash);
-    if (!result) {
-      req.flash('error', 'Invalid username or password.');
+    const comparePasswords = await bcrypt.compare(password, user.hash);
+    if (!comparePasswords) {
+      req.flash('error', 'Invalid password.');
       return res.redirect('login');
     }
     req.session.user = user;
-    req.flash('success', 'Log in successful!');
+    req.flash('success', 'Log in successful.');
     res.redirect('/');
   } catch (err) {
     console.error(err);
@@ -289,17 +330,34 @@ app.post('/login', async (req, res) => {
 
 // RESET PASSWORD
 app.get('/password_reset', (req, res) => {
-  res.render('password_reset', {
-    pageTitle: 'Password reset',
-    user: req.session.user,
+  const pageTitle = 'Password reset';
+  const user = req.session.user;
+  res.render('passwordReset', {
+    pageTitle: pageTitle,
+    user: user,
   });
 });
 
 app.post('/password_reset', async (req, res) => {
   const { username, password, confirmPassword } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    const user_id = await new Promise((resolve, reject) => {
+    const existingUser = await new Promise((resolve, reject) => {
+      db.get('SELECT * FROM users WHERE username=?', [username], (err, row) => {
+        if (err) reject(err);
+        resolve(row);
+      });
+    });
+
+    // If user already exists, display flash message and redirect to register page
+    if (!existingUser) {
+      req.flash('error', 'There is no such user or username is incorrect');
+      res.redirect('password_reset');
+      return;
+    }
+
+    const userId = await new Promise((resolve, reject) => {
       db.get(
         'SELECT id FROM users WHERE username=?',
         [username],
@@ -310,11 +368,15 @@ app.post('/password_reset', async (req, res) => {
       );
     });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (password != confirmPassword) {
+      req.flash('error', 'Passwords are not the same');
+      res.redirect('password_reset');
+      return;
+    }
 
     db.run(
       'UPDATE users SET hash=? WHERE id=?',
-      [hashedPassword, user_id],
+      [hashedPassword, userId],
       (err) => {
         if (err) {
           req.flash('error', 'Error reseting password');
@@ -335,29 +397,30 @@ app.post('/password_reset', async (req, res) => {
 // LOGOUT
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  // req.flash('success', 'You were logged out.');
   res.redirect('/');
 });
 
 // USER ACCOUNT
 app.get('/account', async (req, res) => {
   const pageTitle = 'My Account';
+  const user = req.session.user;
   try {
-    const user_id = req.session.user.id;
-    const show_favorite_setups = await new Promise((resolve, reject) => {
+    const userId = req.session.user.id;
+    const showFavoriteSetups = await new Promise((resolve, reject) => {
       db.all(
         'SELECT user_id, setup_id, surface, tyres, conditions, brand, model, car_image, location_name, location_image FROM setups INNER JOIN favorite_setups ON setups.id=favorite_setups.setup_id INNER JOIN cars ON cars.id=setups.cars_id INNER JOIN locations ON locations.id=setups.locations_id INNER JOIN users ON users.id=favorite_setups.user_id WHERE user_id IN (SELECT id FROM users WHERE id=?)',
-        [user_id],
+        [userId],
         (err, rows) => {
           if (err) reject(err);
           resolve(rows);
         }
       );
     });
+    console.log(showFavoriteSetups);
     res.render('account', {
       pageTitle: pageTitle,
-      user: req.session.user,
-      setups: show_favorite_setups,
+      user: user,
+      setups: showFavoriteSetups,
     });
   } catch (err) {
     console.error(err);

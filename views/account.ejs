@@ -4,7 +4,7 @@
         <div class="user-data pt-5 text-center">
             <h1>Hello, <%= user.username %> !</h1>
         </div>
-        <% if (setups) {%>
+        <% if (setups) { %>
         
         <div class="container-fluid mt-3">
             <div class="text-center">
@@ -56,10 +56,10 @@
                 </div>
             </div>
             <% } %>
-            <% } else { %>
             <div class="mt-5 text-center">
                 <span class="text-center">No favorite setups yet!</span>
             </div>
+            <% } else { %>
             <% } %>
             </div>
         </div>
