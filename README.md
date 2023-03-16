@@ -1,13 +1,12 @@
-# Race_Place Project was previously developed during CS50 course with flask and python on the back-end.
-# Now was moved to express and node.js.
+# Race_Place Project
+## Was previously developed during CS50 course with flask and python on the back-end. Now the back-end is implemented using express.js and node.js.
 
 ## Common setup
 
 Clone the repo and install the dependencies.
 
 ```bash
-git clone https://github.com/contentful/the-example-app.nodejs.git
-cd the-example-app.nodejs
+git clone https://github.com/StevenRis/Race_Place-on-node.js.git
 ```
 
 ```bash
