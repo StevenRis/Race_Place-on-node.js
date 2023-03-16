@@ -4,6 +4,9 @@ import flash from 'express-flash';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 
+import authRoutes from './routes/auth.js';
+// import usersRouter from './routes/auth.js';
+
 import { db } from './db.js';
 
 const app = express();
@@ -279,51 +282,53 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// SIGN IN
-app.get('/login', (req, res) => {
-  const pageTitle = 'Sign in';
-  const user = req.session.user;
+// // SIGN IN
+// app.get('/login', (req, res) => {
+//   const pageTitle = 'Sign in';
+//   const user = req.session.user;
 
-  res.render('login', {
-    pageTitle: pageTitle,
-    user: user,
-  });
-});
+//   res.render('login', {
+//     pageTitle: pageTitle,
+//     user: user,
+//   });
+// });
 
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+// app.post('/login', async (req, res) => {
+//   const { username, password } = req.body;
 
-  try {
-    const user = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT * FROM users WHERE username = ?',
-        [username],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(row);
-        }
-      );
-    });
+//   try {
+//     const user = await new Promise((resolve, reject) => {
+//       db.get(
+//         'SELECT * FROM users WHERE username = ?',
+//         [username],
+//         (err, row) => {
+//           if (err) reject(err);
+//           resolve(row);
+//         }
+//       );
+//     });
 
-    if (!user) {
-      req.flash('error', 'Invalid username.');
-      return res.redirect('login');
-    }
+//     if (!user) {
+//       req.flash('error', 'Invalid username.');
+//       return res.redirect('login');
+//     }
 
-    const comparePasswords = await bcrypt.compare(password, user.hash);
-    if (!comparePasswords) {
-      req.flash('error', 'Invalid password.');
-      return res.redirect('login');
-    }
-    req.session.user = user;
-    req.flash('success', 'Log in successful.');
-    res.redirect('/');
-  } catch (err) {
-    console.error(err);
-    req.flash('error', 'An error occurred.');
-    res.redirect('login');
-  }
-});
+//     const comparePasswords = await bcrypt.compare(password, user.hash);
+//     if (!comparePasswords) {
+//       req.flash('error', 'Invalid password.');
+//       return res.redirect('login');
+//     }
+//     req.session.user = user;
+//     req.flash('success', 'Log in successful.');
+//     res.redirect('/');
+//   } catch (err) {
+//     console.error(err);
+//     req.flash('error', 'An error occurred.');
+//     res.redirect('login');
+//   }
+// });
+
+app.use('/login', authRoutes);
 
 // RESET PASSWORD
 app.get('/password_reset', (req, res) => {
