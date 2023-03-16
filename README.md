@@ -6,7 +6,7 @@
 Clone the repo and install the dependencies.
 
 ```bash
-git clone https://github.com/StevenRis/Race_Place-on-node.js.git
+git clone https://github.com/StevenRis/Race_Place__node.js.git
 ```
 
 ```bash
