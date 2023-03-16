@@ -6,8 +6,7 @@ import bcrypt from 'bcrypt';
 
 import authRoutes from './routes/auth.js';
 import regRoutes from './routes/register.js';
-
-// import usersRouter from './routes/auth.js';
+import resetRoutes from './routes/passwordReset.js';
 
 import { db } from './db.js';
 
@@ -225,23 +224,25 @@ app.get('/locations', (req, res) => {
   });
 });
 
-// REGISTER
-// app.get('/register', (req, res) => {
-//   const pageTitle = 'Register';
+app.use('/register', regRoutes);
+app.use('/login', authRoutes);
+app.use('/logout', authRoutes);
+app.use('/password_reset', resetRoutes);
+
+// // RESET PASSWORD
+// app.get('/password_reset', (req, res) => {
+//   const pageTitle = 'Password reset';
 //   const user = req.session.user;
-//   res.render('register', {
+//   res.render('passwordReset', {
 //     pageTitle: pageTitle,
 //     user: user,
 //   });
 // });
 
-// app.post('/register', async (req, res) => {
+// app.post('/password_reset', async (req, res) => {
 //   const { username, password, confirmPassword } = req.body;
-
-//   // Hash password using bcrypt
 //   const hashedPassword = await bcrypt.hash(password, 10);
 
-//   // Check if username already exists in database
 //   try {
 //     const existingUser = await new Promise((resolve, reject) => {
 //       db.get('SELECT * FROM users WHERE username=?', [username], (err, row) => {
@@ -251,28 +252,38 @@ app.get('/locations', (req, res) => {
 //     });
 
 //     // If user already exists, display flash message and redirect to register page
-//     if (existingUser) {
-//       req.flash('error', 'Username already exists');
-//       res.redirect('register');
+//     if (!existingUser) {
+//       req.flash('error', 'There is no such user or username is incorrect');
+//       res.redirect('password_reset');
 //       return;
 //     }
-//     // Check the password and confirmation password are the same
-//     // if not - display error message
+
+//     const userId = await new Promise((resolve, reject) => {
+//       db.get(
+//         'SELECT id FROM users WHERE username=?',
+//         [username],
+//         (err, row) => {
+//           if (err) reject(err);
+//           resolve(row.id);
+//         }
+//       );
+//     });
+
 //     if (password != confirmPassword) {
 //       req.flash('error', 'Passwords are not the same');
-//       res.redirect('register');
+//       res.redirect('password_reset');
 //       return;
 //     }
-//     // Add new user to the database
+
 //     db.run(
-//       'INSERT INTO users (username, hash) VALUES (?, ?)',
-//       [username, hashedPassword],
+//       'UPDATE users SET hash=? WHERE id=?',
+//       [hashedPassword, userId],
 //       (err) => {
 //         if (err) {
-//           req.flash('error', 'Error creating user');
-//           res.redirect('register');
+//           req.flash('error', 'Error reseting password');
+//           res.redirect('reset_password');
 //         } else {
-//           req.flash('success', 'Registration successful.');
+//           req.flash('success', 'Password reset was successful.');
 //           res.redirect('/login');
 //         }
 //       }
@@ -280,126 +291,9 @@ app.get('/locations', (req, res) => {
 //   } catch (err) {
 //     console.error(err);
 //     req.flash('error', 'An error occurred.');
-//     res.redirect('register');
+//     res.redirect('reset_password');
 //   }
 // });
-
-// // SIGN IN
-// app.get('/login', (req, res) => {
-//   const pageTitle = 'Sign in';
-//   const user = req.session.user;
-
-//   res.render('login', {
-//     pageTitle: pageTitle,
-//     user: user,
-//   });
-// });
-
-// app.post('/login', async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const user = await new Promise((resolve, reject) => {
-//       db.get(
-//         'SELECT * FROM users WHERE username = ?',
-//         [username],
-//         (err, row) => {
-//           if (err) reject(err);
-//           resolve(row);
-//         }
-//       );
-//     });
-
-//     if (!user) {
-//       req.flash('error', 'Invalid username.');
-//       return res.redirect('login');
-//     }
-
-//     const comparePasswords = await bcrypt.compare(password, user.hash);
-//     if (!comparePasswords) {
-//       req.flash('error', 'Invalid password.');
-//       return res.redirect('login');
-//     }
-//     req.session.user = user;
-//     req.flash('success', 'Log in successful.');
-//     res.redirect('/');
-//   } catch (err) {
-//     console.error(err);
-//     req.flash('error', 'An error occurred.');
-//     res.redirect('login');
-//   }
-// });
-app.use('/register', regRoutes);
-
-app.use('/login', authRoutes);
-
-app.use('/logout', authRoutes);
-
-// RESET PASSWORD
-app.get('/password_reset', (req, res) => {
-  const pageTitle = 'Password reset';
-  const user = req.session.user;
-  res.render('passwordReset', {
-    pageTitle: pageTitle,
-    user: user,
-  });
-});
-
-app.post('/password_reset', async (req, res) => {
-  const { username, password, confirmPassword } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  try {
-    const existingUser = await new Promise((resolve, reject) => {
-      db.get('SELECT * FROM users WHERE username=?', [username], (err, row) => {
-        if (err) reject(err);
-        resolve(row);
-      });
-    });
-
-    // If user already exists, display flash message and redirect to register page
-    if (!existingUser) {
-      req.flash('error', 'There is no such user or username is incorrect');
-      res.redirect('password_reset');
-      return;
-    }
-
-    const userId = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT id FROM users WHERE username=?',
-        [username],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(row.id);
-        }
-      );
-    });
-
-    if (password != confirmPassword) {
-      req.flash('error', 'Passwords are not the same');
-      res.redirect('password_reset');
-      return;
-    }
-
-    db.run(
-      'UPDATE users SET hash=? WHERE id=?',
-      [hashedPassword, userId],
-      (err) => {
-        if (err) {
-          req.flash('error', 'Error reseting password');
-          res.redirect('reset_password');
-        } else {
-          req.flash('success', 'Password reset was successful.');
-          res.redirect('/login');
-        }
-      }
-    );
-  } catch (err) {
-    console.error(err);
-    req.flash('error', 'An error occurred.');
-    res.redirect('reset_password');
-  }
-});
 
 // // LOGOUT
 // app.get('/logout', (req, res) => {
