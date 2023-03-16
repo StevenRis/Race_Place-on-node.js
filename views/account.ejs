@@ -1,67 +1,112 @@
 <%- include('header'); -%>
 
-    <div class="container">
-        <div class="user-data pt-5 text-center">
-            <h1>Hello, <%= user.username %> !</h1>
-        </div>
-        <% if (setups) { %>
-        
-        <div class="container-fluid mt-3">
-            <div class="text-center">
-                <h2>Favorite setups</h2>
-            </div>
-            <div class="row">
-            <% for (let i in setups) { %>
-                <div class="wrapper bg-dark shadow">
-                    <div class="box-up">
-                        <img class="img" src="/images/cars/2000cc/<%= setups[i].car_image %>" alt="<%= setups[i].car_image %>" style="width: 100%"> 
-                        <div class="img-info">
-                            <div class="info-vehicle">
-                                <span class="vehicle-title"><%= setups[i].brand %> <%= setups[i].model %></span>
-                                <span class="location-title"><img src="/images/locations/<%= setups[i].location_image %>" alt="<%= setups[i].location_image %>" style="width: 10%"> <%=setups[i].location_name %></span>
-                            </div>
-                            <div class="info-setup d-grid">
-                                <span class="setup-info_condition">Condition: <%= setups[i].conditions %></span>
-                                <span class="setup-info_surface">Surface: <%= setups[i].surface %></span>
-                                <span class="setup-info_tyres">Tyres: <%= setups[i].tyres %></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="box-down">
-                        <div class="h-bg">
-                            <div class="h-bg-inner"></div>
-                        </div>
-                    <div class="show-setup" href="#">
-                        <span class="setup-txt">Setup</span>
-                        <span class="show-setup_icons d-flex">
-                        
-
-                            <form action="/account/favorite_setup/<%= setups[i].model %>/<%= setups[i].location_name %>" method="post">
-                                <input name="location_name" value="<%= setups[i].location_name %>" type="text" hidden>
-                                <input name="model" value="<%= setups[i].model %>" type="text" hidden>
-                                <input name="setup_id" value="<%= setups[i].setup_id %>" type="text" hidden>
-                                <span class="txt pe-2">
-                                <a href="/account/favorite_setup/<%= setups[i].setup_id %>/<%= setups[i].model %>/<%= setups[i].location_name %>" class="btn btn-danger"><img src="/icons/view.png" alt="delete-setup" width="20px"></a>
-
-                                </span>
-                            </form>
-                            <form action="/account" method="post">
-                            <input name="user_id" value="<%= user.id %>" type="text" hidden>
-                            <input name="setup_id" value="<%= setups[i].setup_id %>" type="text" hidden>
-                            <span class="txt"><button class="btn btn-danger" type="submit"><img src="/icons/delete.png" alt="delete-setup" width="20px"></button></span>
-                            </form>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <% } %>
-            <div class="mt-5 text-center">
-                <span class="text-center">No favorite setups yet!</span>
-            </div>
-            <% } else { %>
-            <% } %>
-            </div>
-        </div>
+<div class="container">
+  <div class="user-data pt-5 text-center">
+    <h1>Hello, <%= user.username %> !</h1>
+  </div>
+  <% if (setups.length === 0) { %>
+  <div class="mt-5 text-center">
+    <span class="text-center">No favorite setups yet!</span>
+  </div>
+  <% } else { %>
+  <div class="container-fluid mt-3">
+    <div class="text-center">
+      <h2>Favorite setups</h2>
     </div>
+    <div class="row">
+      <% for (let i in setups) { %>
+      <div class="wrapper bg-dark shadow">
+        <div class="box-up">
+          <img
+            class="img"
+            src="/images/cars/2000cc/<%= setups[i].car_image %>"
+            alt="<%= setups[i].car_image %>"
+            style="width: 100%" />
+          <div class="img-info">
+            <div class="info-vehicle">
+              <span class="vehicle-title"
+                ><%= setups[i].brand %> <%= setups[i].model %></span
+              >
+              <span class="location-title"
+                ><img
+                  src="/images/locations/<%= setups[i].location_image %>"
+                  alt="<%= setups[i].location_image %>"
+                  style="width: 10%" />
+                <%=setups[i].location_name %></span
+              >
+            </div>
+            <div class="info-setup d-grid">
+              <span class="setup-info_condition"
+                >Condition: <%= setups[i].conditions %></span
+              >
+              <span class="setup-info_surface"
+                >Surface: <%= setups[i].surface %></span
+              >
+              <span class="setup-info_tyres"
+                >Tyres: <%= setups[i].tyres %></span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="box-down">
+          <div class="h-bg">
+            <div class="h-bg-inner"></div>
+          </div>
+          <div class="show-setup" href="#">
+            <span class="setup-txt">Setup</span>
+            <span class="show-setup_icons d-flex">
+              <form
+                action="/account/favorite_setup/<%= setups[i].model %>/<%= setups[i].location_name %>"
+                method="post">
+                <input
+                  name="location_name"
+                  value="<%= setups[i].location_name %>"
+                  type="text"
+                  hidden />
+                <input
+                  name="model"
+                  value="<%= setups[i].model %>"
+                  type="text"
+                  hidden />
+                <input
+                  name="setup_id"
+                  value="<%= setups[i].setup_id %>"
+                  type="text"
+                  hidden />
+                <span class="txt pe-2">
+                  <a
+                    href="/account/favorite_setup/<%= setups[i].setup_id %>/<%= setups[i].model %>/<%= setups[i].location_name %>"
+                    class="btn btn-danger"
+                    ><img src="/icons/view.png" alt="delete-setup" width="20px"
+                  /></a>
+                </span>
+              </form>
+              <form action="/account" method="post">
+                <input
+                  name="user_id"
+                  value="<%= user.id %>"
+                  type="text"
+                  hidden />
+                <input
+                  name="setup_id"
+                  value="<%= setups[i].setup_id %>"
+                  type="text"
+                  hidden />
+                <span class="txt"
+                  ><button class="btn btn-danger" type="submit">
+                    <img
+                      src="/icons/delete.png"
+                      alt="delete-setup"
+                      width="20px" /></button
+                ></span>
+              </form>
+            </span>
+          </div>
+        </div>
+      </div>
+      <% } %> <% } %>
+    </div>
+  </div>
+</div>
 <%- include('footer'); -%>

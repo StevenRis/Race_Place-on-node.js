@@ -413,7 +413,6 @@ app.get('/account', async (req, res) => {
         }
       );
     });
-    console.log(showFavoriteSetups);
     res.render('account', {
       pageTitle: pageTitle,
       user: user,
