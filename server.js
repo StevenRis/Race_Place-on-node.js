@@ -1,17 +1,11 @@
-// const express = require('express');
 import express from 'express';
-// const bodyParser = require('body-parser');
 import bodyParser from 'body-parser';
-// const flash = require('express-flash');
 import flash from 'express-flash';
-// const session = require('express-session');
 import session from 'express-session';
-// const bcrypt = require('bcrypt');
 import bcrypt from 'bcrypt';
-// const sqlite3 = require('sqlite3').verbose();
-import sqlite3 from 'sqlite3';
 
-const db = new sqlite3.Database('database.db');
+import { db } from './db.js';
+
 const app = express();
 const port = process.env.PORT || 8080;
 

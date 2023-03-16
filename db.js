@@ -1,5 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('database.db');
+// const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from 'sqlite3';
+export const db = new sqlite3.Database('database.db');
 
 // db.run(
 //   'CREATE TABLE user (id INTEGER PRIMARY KEY, username TEXT, password TEXT)'
@@ -9,4 +10,4 @@ const db = new sqlite3.Database('database.db');
 // const user_id = 'Boby';
 
 // db.run('UPDATE users SET hash=? WHERE username=?', [password, user_id]);
-db.run('DROP TABLE user');
+// db.run('DROP TABLE user');
