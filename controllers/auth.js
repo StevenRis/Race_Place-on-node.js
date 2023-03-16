@@ -1,7 +1,7 @@
 import { db } from '../db.js';
 import bcrypt from 'bcrypt';
 
-// SIGN IN
+// Log in
 export const loginGet = (req, res) => {
   const pageTitle = 'Sign in';
   const user = req.session.user;
@@ -45,4 +45,10 @@ export const loginPost = async (req, res) => {
     req.flash('error', 'An error occurred.');
     res.redirect('login');
   }
+};
+
+// Logout
+export const logout = (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
 };
