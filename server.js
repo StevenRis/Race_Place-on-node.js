@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import authRoutes from './routes/auth.js';
 import regRoutes from './routes/register.js';
 import resetRoutes from './routes/passwordReset.js';
+import favSetupsRoute from './routes/favSetups.js';
 
 import { db } from './db.js';
 
@@ -229,78 +230,6 @@ app.use('/login', authRoutes);
 app.use('/logout', authRoutes);
 app.use('/password_reset', resetRoutes);
 
-// // RESET PASSWORD
-// app.get('/password_reset', (req, res) => {
-//   const pageTitle = 'Password reset';
-//   const user = req.session.user;
-//   res.render('passwordReset', {
-//     pageTitle: pageTitle,
-//     user: user,
-//   });
-// });
-
-// app.post('/password_reset', async (req, res) => {
-//   const { username, password, confirmPassword } = req.body;
-//   const hashedPassword = await bcrypt.hash(password, 10);
-
-//   try {
-//     const existingUser = await new Promise((resolve, reject) => {
-//       db.get('SELECT * FROM users WHERE username=?', [username], (err, row) => {
-//         if (err) reject(err);
-//         resolve(row);
-//       });
-//     });
-
-//     // If user already exists, display flash message and redirect to register page
-//     if (!existingUser) {
-//       req.flash('error', 'There is no such user or username is incorrect');
-//       res.redirect('password_reset');
-//       return;
-//     }
-
-//     const userId = await new Promise((resolve, reject) => {
-//       db.get(
-//         'SELECT id FROM users WHERE username=?',
-//         [username],
-//         (err, row) => {
-//           if (err) reject(err);
-//           resolve(row.id);
-//         }
-//       );
-//     });
-
-//     if (password != confirmPassword) {
-//       req.flash('error', 'Passwords are not the same');
-//       res.redirect('password_reset');
-//       return;
-//     }
-
-//     db.run(
-//       'UPDATE users SET hash=? WHERE id=?',
-//       [hashedPassword, userId],
-//       (err) => {
-//         if (err) {
-//           req.flash('error', 'Error reseting password');
-//           res.redirect('reset_password');
-//         } else {
-//           req.flash('success', 'Password reset was successful.');
-//           res.redirect('/login');
-//         }
-//       }
-//     );
-//   } catch (err) {
-//     console.error(err);
-//     req.flash('error', 'An error occurred.');
-//     res.redirect('reset_password');
-//   }
-// });
-
-// // LOGOUT
-// app.get('/logout', (req, res) => {
-//   req.session.destroy();
-//   res.redirect('/');
-// });
-
 // USER ACCOUNT
 app.get('/account', async (req, res) => {
   const pageTitle = 'My Account';
@@ -342,75 +271,77 @@ app.post('/account', (req, res) => {
   );
 });
 
-// SHOW FAVOURITE SETUP
-app.get(
-  '/account/favorite_setup/:setup_id/:model/:location',
-  async (req, res) => {
-    const { model, location, setup_id } = req.params;
+app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
 
-    try {
-      const car_id = await new Promise((resolve, reject) => {
-        db.get('SELECT id FROM cars WHERE model=?', [model], (err, row) => {
-          if (err) reject(err);
-          resolve(row.id);
-        });
-      });
+// // SHOW FAVOURITE SETUP
+// app.get(
+//   '/account/favorite_setup/:setup_id/:model/:location',
+//   async (req, res) => {
+//     const { model, location, setup_id } = req.params;
 
-      const location_id = await new Promise((resolve, reject) => {
-        db.get(
-          'SELECT id FROM locations WHERE location_name=?',
-          [location],
-          (err, row) => {
-            if (err) reject(err);
-            resolve(row.id);
-          }
-        );
-      });
+//     try {
+//       const car_id = await new Promise((resolve, reject) => {
+//         db.get('SELECT id FROM cars WHERE model=?', [model], (err, row) => {
+//           if (err) reject(err);
+//           resolve(row.id);
+//         });
+//       });
 
-      const car = await new Promise((resolve, reject) => {
-        db.get(
-          'SELECT brand, model, class FROM cars INNER JOIN setups ON cars.id=setups.cars_id WHERE setups.cars_id IN (SELECT id FROM cars WHERE id=?)',
-          [car_id],
-          (err, rows) => {
-            if (err) reject(err);
-            resolve(rows);
-          }
-        );
-      });
+//       const location_id = await new Promise((resolve, reject) => {
+//         db.get(
+//           'SELECT id FROM locations WHERE location_name=?',
+//           [location],
+//           (err, row) => {
+//             if (err) reject(err);
+//             resolve(row.id);
+//           }
+//         );
+//       });
 
-      const locations = await new Promise((resolve, reject) => {
-        db.get(
-          'SELECT location_name FROM locations INNER JOIN setups ON locations.id=setups.locations_id WHERE setups.locations_id IN (SELECT id FROM locations WHERE id=?)',
-          [location_id],
-          (err, rows) => {
-            if (err) reject(err);
-            resolve(rows);
-          }
-        );
-      });
+//       const car = await new Promise((resolve, reject) => {
+//         db.get(
+//           'SELECT brand, model, class FROM cars INNER JOIN setups ON cars.id=setups.cars_id WHERE setups.cars_id IN (SELECT id FROM cars WHERE id=?)',
+//           [car_id],
+//           (err, rows) => {
+//             if (err) reject(err);
+//             resolve(rows);
+//           }
+//         );
+//       });
 
-      const car_setups = await new Promise((resolve, reject) => {
-        db.all('SELECT * FROM setups WHERE id=?', [setup_id], (err, rows) => {
-          if (err) reject(err);
-          resolve(rows);
-        });
-      });
+//       const locations = await new Promise((resolve, reject) => {
+//         db.get(
+//           'SELECT location_name FROM locations INNER JOIN setups ON locations.id=setups.locations_id WHERE setups.locations_id IN (SELECT id FROM locations WHERE id=?)',
+//           [location_id],
+//           (err, rows) => {
+//             if (err) reject(err);
+//             resolve(rows);
+//           }
+//         );
+//       });
 
-      res.render('carSetup', {
-        pageTitle: 'setup',
-        user: req.session.user,
-        car: car,
-        locations: locations,
-        model: model,
-        setups: car_setups,
-      });
-    } catch (err) {
-      console.error(err);
-      req.flash('error', 'An error occurred.');
-      res.redirect('/account');
-    }
-  }
-);
+//       const car_setups = await new Promise((resolve, reject) => {
+//         db.all('SELECT * FROM setups WHERE id=?', [setup_id], (err, rows) => {
+//           if (err) reject(err);
+//           resolve(rows);
+//         });
+//       });
+
+//       res.render('carSetup', {
+//         pageTitle: 'setup',
+//         user: req.session.user,
+//         car: car,
+//         locations: locations,
+//         model: model,
+//         setups: car_setups,
+//       });
+//     } catch (err) {
+//       console.error(err);
+//       req.flash('error', 'An error occurred.');
+//       res.redirect('/account');
+//     }
+//   }
+// );
 
 app.listen(port, () => {
   console.log(`server is running on ${port}`);
