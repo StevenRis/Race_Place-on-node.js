@@ -4,6 +4,8 @@ import flash from 'express-flash';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 
+import homeRoute from './routes/home.js';
+import carsRoute from './routes/cars.js';
 import authRoutes from './routes/auth.js';
 import regRoutes from './routes/register.js';
 import resetRoutes from './routes/passwordReset.js';
@@ -34,32 +36,32 @@ app.use(
 // ROUTES
 //
 // HOME
-app.get('/', (req, res) => {
-  const pageTitle = 'Home page';
-  const user = req.session.user;
-  res.render('home', { pageTitle: pageTitle, user: req.session.user });
-});
+// app.get('/', (req, res) => {
+//   const pageTitle = 'Home page';
+//   const user = req.session.user;
+//   res.render('home', { pageTitle: pageTitle, user: req.session.user });
+// });
 
 // CARS
-app.get('/cars', async (req, res) => {
-  const pageTitle = 'Vehicles';
-  try {
-    const cars = await new Promise((resolve, reject) => {
-      db.all('SELECT * FROM cars', (err, rows) => {
-        if (err) reject(err);
-        resolve(rows);
-      });
-    });
-    res.render('cars', {
-      pageTitle: pageTitle,
-      user: req.session.user,
-      cars: cars,
-    });
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
-});
+// app.get('/cars', async (req, res) => {
+//   const pageTitle = 'Vehicles';
+//   try {
+//     const cars = await new Promise((resolve, reject) => {
+//       db.all('SELECT * FROM cars', (err, rows) => {
+//         if (err) reject(err);
+//         resolve(rows);
+//       });
+//     });
+//     res.render('cars', {
+//       pageTitle: pageTitle,
+//       user: req.session.user,
+//       cars: cars,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.redirect('/');
+//   }
+// });
 
 // SHOW LOCATIONS FOR PARTICULAR CAR
 app.get('/cars/:model', async (req, res) => {
@@ -225,11 +227,6 @@ app.get('/locations', (req, res) => {
   });
 });
 
-app.use('/register', regRoutes);
-app.use('/login', authRoutes);
-app.use('/logout', authRoutes);
-app.use('/password_reset', resetRoutes);
-
 // USER ACCOUNT
 app.get('/account', async (req, res) => {
   const pageTitle = 'My Account';
@@ -270,8 +267,6 @@ app.post('/account', (req, res) => {
     }
   );
 });
-
-app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
 
 // // SHOW FAVOURITE SETUP
 // app.get(
@@ -342,6 +337,15 @@ app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:mod
 //     }
 //   }
 // );
+
+// Routes
+app.use('/', homeRoute);
+app.use('/cars', carsRoute);
+app.use('/register', regRoutes);
+app.use('/login', authRoutes);
+app.use('/logout', authRoutes);
+app.use('/password_reset', resetRoutes);
+app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
 
 app.listen(port, () => {
   console.log(`server is running on ${port}`);
