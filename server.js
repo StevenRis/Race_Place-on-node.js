@@ -2,8 +2,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import flash from 'express-flash';
 import session from 'express-session';
-// import bcrypt from 'bcrypt';
 
+// Import Routes
 import homeRoute from './routes/home.js';
 import carsRoute from './routes/cars.js';
 import authRoutes from './routes/auth.js';
@@ -50,5 +50,5 @@ app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:mod
 app.use('/account', accountRoutes);
 
 app.listen(port, () => {
-  console.log(`server is running on ${port}`);
+  console.log(`server is running: localhost:${port}`);
 });
