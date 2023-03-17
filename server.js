@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import flash from 'express-flash';
 import session from 'express-session';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 import homeRoute from './routes/home.js';
 import carsRoute from './routes/cars.js';
@@ -10,8 +10,9 @@ import authRoutes from './routes/auth.js';
 import regRoutes from './routes/register.js';
 import resetRoutes from './routes/passwordReset.js';
 import favSetupsRoute from './routes/favSetups.js';
+import locationsRoute from './routes/locations.js';
 
-import { db } from './db.js';
+// import { db } from './db.js';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -32,36 +33,15 @@ app.use(
   })
 );
 
-//
-// ROUTES
-//
-// HOME
-// app.get('/', (req, res) => {
-//   const pageTitle = 'Home page';
-//   const user = req.session.user;
-//   res.render('home', { pageTitle: pageTitle, user: req.session.user });
-// });
-
-// CARS
-// app.get('/cars', async (req, res) => {
-//   const pageTitle = 'Vehicles';
-//   try {
-//     const cars = await new Promise((resolve, reject) => {
-//       db.all('SELECT * FROM cars', (err, rows) => {
-//         if (err) reject(err);
-//         resolve(rows);
-//       });
-//     });
-//     res.render('cars', {
-//       pageTitle: pageTitle,
-//       user: req.session.user,
-//       cars: cars,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.redirect('/');
-//   }
-// });
+// Routes
+app.use('/', homeRoute);
+app.use('/cars', carsRoute);
+app.use('/locations', locationsRoute);
+app.use('/register', regRoutes);
+app.use('/login', authRoutes);
+app.use('/logout', authRoutes);
+app.use('/password_reset', resetRoutes);
+app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
 
 // SHOW LOCATIONS FOR PARTICULAR CAR
 app.get('/cars/:model', async (req, res) => {
@@ -212,20 +192,20 @@ app.post('/add-to-favorites', async (req, res) => {
   }
 });
 
-// SHOW LOCATIONS
-app.get('/locations', (req, res) => {
-  const pageTitle = 'Locations';
-  const user = req.session.user;
+// // SHOW LOCATIONS
+// app.get('/locations', (req, res) => {
+//   const pageTitle = 'Locations';
+//   const user = req.session.user;
 
-  db.all('SELECT * FROM locations', (err, locations) => {
-    if (err) return console.err(err);
-    res.render('locations', {
-      pageTitle: pageTitle,
-      locations: locations,
-      user: user,
-    });
-  });
-});
+//   db.all('SELECT * FROM locations', (err, locations) => {
+//     if (err) return console.err(err);
+//     res.render('locations', {
+//       pageTitle: pageTitle,
+//       locations: locations,
+//       user: user,
+//     });
+//   });
+// });
 
 // USER ACCOUNT
 app.get('/account', async (req, res) => {
@@ -267,85 +247,6 @@ app.post('/account', (req, res) => {
     }
   );
 });
-
-// // SHOW FAVOURITE SETUP
-// app.get(
-//   '/account/favorite_setup/:setup_id/:model/:location',
-//   async (req, res) => {
-//     const { model, location, setup_id } = req.params;
-
-//     try {
-//       const car_id = await new Promise((resolve, reject) => {
-//         db.get('SELECT id FROM cars WHERE model=?', [model], (err, row) => {
-//           if (err) reject(err);
-//           resolve(row.id);
-//         });
-//       });
-
-//       const location_id = await new Promise((resolve, reject) => {
-//         db.get(
-//           'SELECT id FROM locations WHERE location_name=?',
-//           [location],
-//           (err, row) => {
-//             if (err) reject(err);
-//             resolve(row.id);
-//           }
-//         );
-//       });
-
-//       const car = await new Promise((resolve, reject) => {
-//         db.get(
-//           'SELECT brand, model, class FROM cars INNER JOIN setups ON cars.id=setups.cars_id WHERE setups.cars_id IN (SELECT id FROM cars WHERE id=?)',
-//           [car_id],
-//           (err, rows) => {
-//             if (err) reject(err);
-//             resolve(rows);
-//           }
-//         );
-//       });
-
-//       const locations = await new Promise((resolve, reject) => {
-//         db.get(
-//           'SELECT location_name FROM locations INNER JOIN setups ON locations.id=setups.locations_id WHERE setups.locations_id IN (SELECT id FROM locations WHERE id=?)',
-//           [location_id],
-//           (err, rows) => {
-//             if (err) reject(err);
-//             resolve(rows);
-//           }
-//         );
-//       });
-
-//       const car_setups = await new Promise((resolve, reject) => {
-//         db.all('SELECT * FROM setups WHERE id=?', [setup_id], (err, rows) => {
-//           if (err) reject(err);
-//           resolve(rows);
-//         });
-//       });
-
-//       res.render('carSetup', {
-//         pageTitle: 'setup',
-//         user: req.session.user,
-//         car: car,
-//         locations: locations,
-//         model: model,
-//         setups: car_setups,
-//       });
-//     } catch (err) {
-//       console.error(err);
-//       req.flash('error', 'An error occurred.');
-//       res.redirect('/account');
-//     }
-//   }
-// );
-
-// Routes
-app.use('/', homeRoute);
-app.use('/cars', carsRoute);
-app.use('/register', regRoutes);
-app.use('/login', authRoutes);
-app.use('/logout', authRoutes);
-app.use('/password_reset', resetRoutes);
-app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
 
 app.listen(port, () => {
   console.log(`server is running on ${port}`);
