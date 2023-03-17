@@ -56,32 +56,13 @@
           <div class="show-setup" href="#">
             <span class="setup-txt">Setup</span>
             <span class="show-setup_icons d-flex">
-              <form
-                action="/account/favorite_setup/<%= setups[i].model %>/<%= setups[i].location_name %>"
-                method="post">
-                <input
-                  name="location_name"
-                  value="<%= setups[i].location_name %>"
-                  type="text"
-                  hidden />
-                <input
-                  name="model"
-                  value="<%= setups[i].model %>"
-                  type="text"
-                  hidden />
-                <input
-                  name="setup_id"
-                  value="<%= setups[i].setup_id %>"
-                  type="text"
-                  hidden />
-                <span class="txt pe-2">
+            <span class="txt pe-2">
                   <a
                     href="/account/favorite_setup/<%= setups[i].setup_id %>/<%= setups[i].model %>/<%= setups[i].location_name %>"
                     class="btn btn-danger"
                     ><img src="/icons/view.png" alt="delete-setup" width="20px"
                   /></a>
-                </span>
-              </form>
+            </span>
               <form action="/account" method="post">
                 <input
                   name="user_id"
