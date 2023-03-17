@@ -11,8 +11,9 @@ import regRoutes from './routes/register.js';
 import resetRoutes from './routes/passwordReset.js';
 import favSetupsRoute from './routes/favSetups.js';
 import locationsRoute from './routes/locations.js';
+import addToFavRoute from './routes/addToFav.js';
 
-// import { db } from './db.js';
+import { db } from './db.js';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -42,6 +43,7 @@ app.use('/login', authRoutes);
 app.use('/logout', authRoutes);
 app.use('/password_reset', resetRoutes);
 app.use('/', favSetupsRoute); // route = '/account/favorite_setup/:setup_id/:model/:location'
+app.use('/add-to-favorites', addToFavRoute);
 
 // SHOW LOCATIONS FOR PARTICULAR CAR
 app.get('/cars/:model', async (req, res) => {
@@ -150,61 +152,46 @@ app.get('/cars/:model/:location', async (req, res) => {
   }
 });
 
-// ADD SETUP TO FAVORITE
-app.post('/add-to-favorites', async (req, res) => {
-  const setupId = req.body.setupId;
+// // ADD SETUP TO FAVORITE
+// app.post('/add-to-favorites', async (req, res) => {
+//   const setupId = req.body.setupId;
 
-  try {
-    const userId = req.session.user.id;
-    const setupExists = await new Promise((resolve, reject) => {
-      db.get(
-        'SELECT EXISTS (SELECT 1 FROM favorite_setups WHERE user_id=? and setup_id=?)',
-        [userId, setupId],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(Object.values(row)[0]); // Extract the first value of the first row
-        }
-      );
-    });
-
-    if (setupExists === 0) {
-      db.run(
-        'INSERT INTO favorite_setups (user_id, setup_id) VALUES (?, ?)',
-        [userId, setupId],
-        (err) => {
-          if (err) {
-            req.flash('error', 'Error occured.');
-            res.redirect('/cars');
-          } else {
-            req.flash('success', 'Setup was added to favorites.');
-            res.redirect('back');
-          }
-        }
-      );
-    } else {
-      req.flash('error', 'You already have this setup.');
-      res.redirect('back');
-    }
-  } catch (err) {
-    console.error(err);
-    req.flash('error', 'An error occurred.');
-    res.redirect('/cars');
-  }
-});
-
-// // SHOW LOCATIONS
-// app.get('/locations', (req, res) => {
-//   const pageTitle = 'Locations';
-//   const user = req.session.user;
-
-//   db.all('SELECT * FROM locations', (err, locations) => {
-//     if (err) return console.err(err);
-//     res.render('locations', {
-//       pageTitle: pageTitle,
-//       locations: locations,
-//       user: user,
+//   try {
+//     const userId = req.session.user.id;
+//     const setupExists = await new Promise((resolve, reject) => {
+//       db.get(
+//         'SELECT EXISTS (SELECT 1 FROM favorite_setups WHERE user_id=? and setup_id=?)',
+//         [userId, setupId],
+//         (err, row) => {
+//           if (err) reject(err);
+//           resolve(Object.values(row)[0]); // Extract the first value of the first row
+//         }
+//       );
 //     });
-//   });
+
+//     if (setupExists === 0) {
+//       db.run(
+//         'INSERT INTO favorite_setups (user_id, setup_id) VALUES (?, ?)',
+//         [userId, setupId],
+//         (err) => {
+//           if (err) {
+//             req.flash('error', 'Error occured.');
+//             res.redirect('/cars');
+//           } else {
+//             req.flash('success', 'Setup was added to favorites.');
+//             res.redirect('back');
+//           }
+//         }
+//       );
+//     } else {
+//       req.flash('error', 'You already have this setup.');
+//       res.redirect('back');
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     req.flash('error', 'An error occurred.');
+//     res.redirect('/cars');
+//   }
 // });
 
 // USER ACCOUNT
