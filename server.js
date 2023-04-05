@@ -17,7 +17,7 @@ import carLocationsRoute from './routes/carLocations.js';
 import carSetupRoute from './routes/carSetup.js';
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 80;
 
 app.set('view engine', 'ejs');
 
